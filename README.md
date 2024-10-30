@@ -200,3 +200,105 @@ subnet 10.85.4.0 netmask 255.255.255.0 {
 
 service isc-dhcp-server restart
 ```
+---------------------------------------------------------------------------------------------------
+## REVISI
+Install DHCP di Tybur
+```
+apt-get update
+apt install isc-dhcp-server
+```
+Lalu edit konfigurasi DHCP Server di ``/etc/dhcp/dhcpd.conf`` dan tambahkan config di atas kemudian restart DHCP-nya
+```
+service isc-dhcp-server restart
+```
+Install DHCP Relay di Paradis
+```
+apt-get update
+apt-get install isc-dhcp-relay -y
+```
+Konfigurasi DHCP relay pada ``/etc/default/isc-dhcp-relay``
+```
+SERVERS="10.85.4.3"  # IP dari DHCP server (Tybur)
+INTERFACES="eth1 eth2 eth3 eth4" 
+```
+Kemudian Restart DHCP Paradis
+```
+service isc-dhcp-relay restart
+```
+----------------------------------------------------------------------------------------------------------
+Install BIND9 di Fritz
+```
+apt-get update
+apt-get install bind9 -y
+```
+Konfigurasi forwarders BIND9 di ``/etc/bind/named.conf.options``
+```
+options {
+    directory "/var/cache/bind";
+    forwarders {
+        192.168.122.1;  #     };
+    allow-query { any; };
+    listen-on-v6 { any; };
+};
+```
+Tambahkan DNS zone untuk marley.it45.com dan eldia.it45.com di ``/etc/bind/named.conf.local``
+```
+zone "marley.it45.com" {
+    type master;
+    file "/etc/bind/jarkom/marley.it45.com";
+};
+
+zone "eldia.it45.com" {
+    type master;
+    file "/etc/bind/jarkom/eldia.it45.com";
+};
+
+```
+Buat direktori untuk file zone
+```
+mkdir /etc/bind/jarkom
+```
+Buat file zone untuk marley.it45.com ``nano /etc/bind/jarkom/marley.it45.com``
+```
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@    IN    SOA    marley.it45.com. root.marley.it45.com. (
+             2024102701        ; Serial
+             604800        ; Refresh
+             86400        ; Retry
+             2419200        ; Expire
+             604800 )    ; Negative Cache TTL
+;
+@    IN    NS    marley.it45.com.
+@    IN    A     10.85.1.2        # IP untuk domain marley.it45.com (sesuaikan dengan IP dari Annie/Marley)
+
+```
+Buat file zona untuk eldia.it45.com ``nano /etc/bind/jarkom/eldia.it45.com``
+```
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@    IN    SOA    eldia.it45.com. root.eldia.it45.com. (
+             2024102701        ; Serial
+             604800        ; Refresh
+             86400        ; Retry
+             2419200        ; Expire
+             604800 )    ; Negative Cache TTL
+;
+@    IN    NS    eldia.it45.com.
+@    IN    A     10.85.2.2        # IP untuk domain eldia.it45.com (sesuaikan dengan IP dari Armin/Eldia)
+
+```
+Restart BIND9 di Fritz
+```
+service bind9 restart
+```
+Selanjutnya periksa IP Address untuk memastikan Zeke sudah mendapat IP yang benar ``ifconfig`` <br />
+Tes koneksi dengan cara ping domain yang sudah dikonfigurasi
+```
+ping marley.it45.com
+ping eldia.it45.com
+```
