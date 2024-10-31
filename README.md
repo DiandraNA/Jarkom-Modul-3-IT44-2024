@@ -241,16 +241,16 @@ options {
     listen-on-v6 { any; };
 };
 ```
-Tambahkan DNS zone untuk marley.it45.com dan eldia.it45.com di ``/etc/bind/named.conf.local``
+Tambahkan DNS zone untuk marley.it44.com dan eldia.it44.com di ``/etc/bind/named.conf.local``
 ```
-zone "marley.it45.com" {
+zone "marley.it44.com" {
     type master;
-    file "/etc/bind/jarkom/marley.it45.com";
+    file "/etc/bind/jarkom/marley.it44.com";
 };
 
-zone "eldia.it45.com" {
+zone "eldia.it44.com" {
     type master;
-    file "/etc/bind/jarkom/eldia.it45.com";
+    file "/etc/bind/jarkom/eldia.it44.com";
 };
 
 ```
@@ -258,37 +258,37 @@ Buat direktori untuk file zone
 ```
 mkdir /etc/bind/jarkom
 ```
-Buat file zone untuk marley.it45.com ``nano /etc/bind/jarkom/marley.it45.com``
+Buat file zone untuk marley.it44.com ``nano /etc/bind/jarkom/marley.it44.com``
 ```
 ;
 ; BIND data file for local loopback interface
 ;
 $TTL    604800
-@    IN    SOA    marley.it45.com. root.marley.it45.com. (
+@    IN    SOA    marley.it44.com. root.marley.it44.com. (
              2024102701        ; Serial
              604800        ; Refresh
              86400        ; Retry
              2419200        ; Expire
              604800 )    ; Negative Cache TTL
 ;
-@    IN    NS    marley.it45.com.
-@    IN    A     10.85.1.2        # IP untuk domain marley.it45.com (sesuaikan dengan IP dari Annie/Marley)
+@    IN    NS    marley.it44.com.
+@    IN    A     10.85.1.2        # IP untuk domain marley.it44.com (sesuaikan dengan IP dari Annie/Marley)
 
 ```
-Buat file zona untuk eldia.it45.com ``nano /etc/bind/jarkom/eldia.it45.com``
+Buat file zona untuk eldia.it44.com ``nano /etc/bind/jarkom/eldia.it44.com``
 ```
 ;
 ; BIND data file for local loopback interface
 ;
 $TTL    604800
-@    IN    SOA    eldia.it45.com. root.eldia.it45.com. (
+@    IN    SOA    eldia.it44.com. root.eldia.it44.com. (
              2024102701        ; Serial
              604800        ; Refresh
              86400        ; Retry
              2419200        ; Expire
              604800 )    ; Negative Cache TTL
 ;
-@    IN    NS    eldia.it45.com.
+@    IN    NS    eldia.it44.com.
 @    IN    A     10.85.2.2        # IP untuk domain eldia.it45.com (sesuaikan dengan IP dari Armin/Eldia)
 
 ```
@@ -299,6 +299,6 @@ service bind9 restart
 Selanjutnya periksa IP Address untuk memastikan Zeke sudah mendapat IP yang benar ``ifconfig`` <br />
 Tes koneksi dengan cara ping domain yang sudah dikonfigurasi
 ```
-ping marley.it45.com
-ping eldia.it45.com
+ping marley.it44.com
+ping eldia.it44.com
 ```
